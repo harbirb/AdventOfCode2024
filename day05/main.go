@@ -43,7 +43,7 @@ func main() {
 	for _, update := range updates {
 		valid := true
 		swapped := false
-		for i, _ := range update {
+		for i := range update {
 			for j := 0; j < i; j++ {
 				if slices.Contains(r[update[i]], update[j]) {
 					valid = false
