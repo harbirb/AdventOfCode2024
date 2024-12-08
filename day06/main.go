@@ -3,9 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"log"
 	"os"
-	"runtime/trace"
 	"strconv"
 	"strings"
 )
@@ -13,14 +11,6 @@ import (
 var rows, cols int
 
 func main() {
-	f, err := os.Create("trace.out")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-
-	trace.Start(f)
-	defer trace.Stop()
 	file, err := os.Open("input.txt")
 	if err != nil {
 		panic(err)
