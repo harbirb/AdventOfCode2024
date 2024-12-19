@@ -39,7 +39,7 @@ func main() {
 	}
 
 	// ip = 0
-	b, c = 0, 0
+	// a, b, c = 0, 0, 0
 	// for ip < len(instrs)-1 {
 	// 	switch instrs[ip] {
 	// 	case 0:
@@ -77,7 +77,7 @@ func main() {
 	// 		ip += 2
 	// 	}
 
-	a := 0
+	a = 0
 	for i := 1; i <= len(instrs); i++ {
 		for {
 			match := true
@@ -138,22 +138,5 @@ func prog(a int) {
 			fmt.Println()
 			break
 		}
-	}
-}
-
-func combo(n int) int {
-	if n <= 3 {
-		return n
-	}
-	if n == 4 {
-		return a
-	}
-	if n == 5 {
-		return b
-	}
-	if n == 6 {
-		return c
-	} else {
-		return 0
 	}
 }
