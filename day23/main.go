@@ -10,12 +10,13 @@ import (
 	"time"
 )
 
+var sm = make(map[string][]string)
+
 func main() {
 	start := time.Now()
 	file, _ := os.Open("input.txt")
 	defer file.Close()
 	scanner := bufio.NewScanner(file)
-	sm := make(map[string][]string)
 	for scanner.Scan() {
 		pairs := strings.Split(scanner.Text(), "-")
 		sm[pairs[0]] = append(sm[pairs[0]], pairs[1])
@@ -28,7 +29,7 @@ func main() {
 	for k, vs := range sm {
 		for _, v1 := range vs {
 			for _, v2 := range vs {
-				if slices.Contains(sm[v1], k) && slices.Contains(sm[v2], k) && slices.Contains(sm[v1], v2) && slices.Contains(sm[v2], v1) {
+				if slices.Contains(sm[v1], v2) {
 					if k[0] == 't' || v1[0] == 't' || v2[0] == 't' {
 						sl := []string{k, v1, v2}
 						sort.Strings(sl)
@@ -39,36 +40,86 @@ func main() {
 			}
 		}
 	}
-
-	// for k := range conn {
-	// 	fmt.Println(k)
-	// }
 	fmt.Println(len(conn))
 
-	visited := make(map[string]bool)
-	for k, vs := range sm {
-		visited[k] = true
-		currset := make(map[string]bool)
-		biggest_setlen := 0
-		for _, v := range vs {
-			// perform intersection of edges
-			intsec := intersection(sm[k], sm[v])
-			if len(intsec) > biggest_setlen {
-				biggest_setlen = len(intsec)
-			}
-
-		}
+	cand := map[string]bool{}
+	for s := range sm {
+		cand[s] = true
 	}
+	poo := cf(map[string]bool{}, cand, map[string]bool{})
+	names := []string{}
+	for k := range poo {
+		names = append(names, k)
+	}
+	sort.Strings(names)
+	fmt.Println(strings.Join(names, ","))
 
 	fmt.Printf("Program took %s to run.\n", time.Since(start))
 }
 
-func intersection(s1, s2 []string) []string {
-	intsec := []string{}
-	for _, s := range s1 {
-		if slices.Contains(s2, s) {
-			intsec = append(intsec, s)
+// Visit each node v. Candidates = Neighbors of v.
+// Recursively call w next candidates = intersection of (v and N(candidate))
+
+// function(clique, candidates, visited)
+// start with empty clique, all v's as candidates, empty visited
+//  pick a v from candidates
+//  add v to clique
+//  add v to visited
+//  new candidates = intersection of candidates and neighbors of v
+
+func cf(cl, cand, visited map[string]bool) map[string]bool {
+	newcl := make(map[string]bool)
+	for i := range cl {
+		newcl[i] = true
+	}
+	newv := make(map[string]bool)
+	for j := range visited {
+		newv[j] = true
+	}
+	maxcl := make(map[string]bool)
+	if len(cand) == 0 {
+		return cl
+	}
+	for k := range cand {
+		newcl[k] = true
+		newv[k] = true
+		newcand := make(map[string]bool)
+		for _, neigh := range sm[k] {
+			if newv[neigh] {
+				continue
+			}
+			newcand[neigh] = true
+		}
+		intsec := intersection(cand, newcand)
+		newmaxcl := cf(newcl, intsec, newv)
+		if len(maxcl) == 0 || len(newmaxcl) > len(maxcl) {
+			// copy elementwise
+			for f := range maxcl {
+				delete(maxcl, f)
+			}
+			for f := range newmaxcl {
+				maxcl[f] = true
+			}
+		}
+		delete(newcl, k)
+	}
+	return maxcl
+
+}
+
+func intersection(s1, s2 map[string]bool) map[string]bool {
+	intsec := make(map[string]bool)
+	for k := range s1 {
+		if s2[k] {
+			intsec[k] = true
 		}
 	}
 	return intsec
 }
+
+// func pk(m map[string]bool) {
+// 	for k := range m {
+// 		fmt.Print(k, " ")
+// 	}
+// 	fmt.Print("\n")
+// }
