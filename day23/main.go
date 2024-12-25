@@ -68,30 +68,19 @@ func main() {
 //  new candidates = intersection of candidates and neighbors of v
 
 func cf(cl, cand, visited map[string]bool) map[string]bool {
-	newcl := make(map[string]bool)
-	for i := range cl {
-		newcl[i] = true
-	}
-	newv := make(map[string]bool)
-	for j := range visited {
-		newv[j] = true
-	}
+	newcl := copySet(cl)
+	newv := copySet(visited)
 	maxcl := make(map[string]bool)
 	if len(cand) == 0 {
 		return cl
 	}
 	for k := range cand {
 		newcl[k] = true
-		newv[k] = true
 		newcand := make(map[string]bool)
 		for _, neigh := range sm[k] {
-			if newv[neigh] {
-				continue
-			}
 			newcand[neigh] = true
 		}
-		intsec := intersection(cand, newcand)
-		newmaxcl := cf(newcl, intsec, newv)
+		newmaxcl := cf(newcl, intersect(cand, newcand), intersect(newv, newcand))
 		if len(maxcl) == 0 || len(newmaxcl) > len(maxcl) {
 			// copy elementwise
 			for f := range maxcl {
@@ -102,12 +91,14 @@ func cf(cl, cand, visited map[string]bool) map[string]bool {
 			}
 		}
 		delete(newcl, k)
+		delete(cand, k)
+		newv[k] = true
 	}
 	return maxcl
 
 }
 
-func intersection(s1, s2 map[string]bool) map[string]bool {
+func intersect(s1, s2 map[string]bool) map[string]bool {
 	intsec := make(map[string]bool)
 	for k := range s1 {
 		if s2[k] {
@@ -115,6 +106,14 @@ func intersection(s1, s2 map[string]bool) map[string]bool {
 		}
 	}
 	return intsec
+}
+
+func copySet(src map[string]bool) map[string]bool {
+	newset := make(map[string]bool)
+	for k := range src {
+		newset[k] = true
+	}
+	return newset
 }
 
 // func pk(m map[string]bool) {
