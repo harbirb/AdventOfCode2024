@@ -1,0 +1,48 @@
+Q(22) = x22 XOR y22
+The only other XOR gate is to evaluate x XOR y
+
+Z(22) = Q(22) XOR (C22)
+If we have a Z, it must be from a gate containing a XOR - z15, z45, z21, z34 violate this.
+
+z = (x00 XOR y00) XOR CARRY
+if we have an OR gate, the left and right must both have ANDs
+Carry(new) = (x00 AND y00) OR (Cprev AND (x00 XOR y00))
+
+z34's should be swapped with cqk. 
+    z34 = (x34 XOR y34) XOR Carry (where carry = ksm)
+    y34 XOR x34 -> fcv  
+    ksm XOR fcv -> cqk
+
+z21 should be swapped with gds
+    z21= (x21 XOR y21) XOR Carry  (carry = nsp)
+    x21 XOR y21 -> tqh
+    nsp XOR tqh -> gds
+
+
+z45 should be swapped with 
+    z45= carry45 since it is > 44
+    z45 = (x44 AND y44) OR (C44 AND (x44 XOR y44))
+    y44 AND x44 -> wcr
+    y44 XOR x44 -> smj
+    smj AND ptm -> swb      carry44 is ptm
+    wcr OR swb -> z45
+    z45 is correct
+
+
+z15 should be swapped with fph
+    z15 = (x15 XOR y15) XOR carry   (carry = ccp)
+    x15 XOR y15 -> hhw
+    ccp XOR hhw -> fph
+
+
+jrs is from  y30 XOR x30
+
+wrk XOR dwm -> z30
+y30 AND x30 -> wrk wrk is out of place. Should be y30 xor x30 
+rjb OR tqc -> dwm
+
+
+cqk,fph,gds,jrs,wrk,z15,z21,z34
+
+
+
